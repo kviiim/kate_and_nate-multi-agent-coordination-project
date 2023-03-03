@@ -176,7 +176,7 @@ def run():
         V.vz = 0.0
         V.v_psi = 0.0
         
-        if self.hardware_flag:
+        if self._hardware_flag:
             self.velocity_setpoint_hw(V)
         else:
             self.velocity_setpoint_sim(V)
@@ -204,7 +204,7 @@ def run():
             
             # print out current position of each agent
             x, y, z = agent.get_pos().x, agent.get_pos().y, agent.get_pos().z
-            print(f'Agent [{agent._id}]: t = {time_lapse} -> [x, y, z] = [{x}, {y}, {z}]')
+            print(f'Agent [{agent._id}]: t = {time_lapse} -> [x, y, z] = [{x:0.3f}, {y:0.3f}, {z:0.3f}]')
                 
 
         # keep track of time lapsed
