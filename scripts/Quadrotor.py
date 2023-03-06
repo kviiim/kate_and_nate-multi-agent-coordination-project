@@ -41,6 +41,9 @@ class Quadrotor():
         self._task = None
         self._trajectory = None
 
+        self._setpoints = [[0,0,1],[.2,.2,1],[.4,.4,1]]
+        self._setpoints_index = 0
+
         # set up system
         # get/set simulation parameters
         self._time_delta = dt
@@ -151,6 +154,16 @@ class Quadrotor():
                                     vel_cmd.v_psi)
 
         # store updates
+        self.update_state_trace()
+
+    def velocity_setpoint_hw_global(self, vel_cmd):
+        """
+        Using commander, send velocities in global frame.
+        """
+        self.scf.commander.send_velocity_world_setpoint(vel_cmd.vx,
+                                    vel_cmd.vy,
+                                    vel_cmd.vz,
+                                    vel_cmd.v_psi)
         self.update_state_trace()
 
 
