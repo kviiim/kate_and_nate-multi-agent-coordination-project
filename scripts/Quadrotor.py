@@ -1,3 +1,4 @@
+import math
 import numpy as np
 from math import sin, cos
 from scripts.utils import State, Position, VelCommand
@@ -41,19 +42,28 @@ class Quadrotor():
         self._task = None
         self._trajectory = None
 
-        self._setpoints = [[0,0,1],[.2,.2,1],[.4,.4,1]]
-        self._setpoints_index = 0
 
         # set up system
         # get/set simulation parameters
         self._time_delta = dt
 
+        # operating height for the crazyflie
+        self._take_off_height = take_off_height
+
+        start = [0.0, 0.0, take_off_height]
+        end = [1.5, 0.0, take_off_height]
+        time = 4
+        num = math.floor(time/self._time_delta)
+
+        print()
+
+        self._setpoints = list(np.linspace(start, end, num=num ,endpoint= True))
+        self._setpoints_index = 0
+
+
         # parameters for simulated take-off and landing velocity control
         self._K, self._height_threshold = 2.0, 0.01
         self._vz_max = 0.15 # maximum velocity for take-off and landing in simulation
-
-        # operating height for the crazyflie
-        self._take_off_height = take_off_height
 
         # crazyflie hardware setup
         self._hardware_flag = hardware_flag
@@ -161,6 +171,7 @@ class Quadrotor():
                                     vel_cmd.vy,
                                     vel_cmd.v_psi,
                                     z_value)
+        print(f'Agent [{self._id}]: send_vel [{vel_cmd.vx:0.3f}, {vel_cmd.vy:0.3f}, {vel_cmd.v_psi:0.3f}, { z_value}]')
         self.update_state_trace()
 
     def velocity_setpoint_hw_global(self, vel_cmd):

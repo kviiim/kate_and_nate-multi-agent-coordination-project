@@ -6,7 +6,7 @@ time_delta:     0.25
 agent_init:     [
                 #  ['CF7', [-0.6, 0.9, 0.0], 0.4],
                 #  ['CF8', [-0.6, 0.3, 0.0], 0.4],
-                 ['CF4', [0.0, 0.0, 0.0], 1.0]]
+                 ['CF8', [0.0, 0.0, 0.0], 0.5]]
 
 
 agent_colors:   ['DarkBlue', 'DarkSlateGrey', 'MediumPurple']

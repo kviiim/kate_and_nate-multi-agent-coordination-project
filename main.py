@@ -195,7 +195,7 @@ def run():
         V.vy = (next_pos[1] - current_pos.y)/agent._time_delta
         V.vz = (next_pos[2] - current_pos.z)/agent._time_delta
         V.v_psi = 0.0
-
+        
         agent._setpoints_index += 1
         # agent.velocity_setpoint_hw_global(V)
         agent.velocity_setpoint_hw_commander(V,next_pos[2])
@@ -204,7 +204,7 @@ def run():
     # #########################################################################################################
 
     time_lapse = 0
-    flight_duration = .6
+    flight_duration = 4
 
 
     for agent in agent_list.values():

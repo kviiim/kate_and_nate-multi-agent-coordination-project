@@ -117,6 +117,26 @@ class CrazyflieRRT:
             else:
                 curr_forward_idx += 1
         return new_path
+    
+    @staticmethod
+    def fit_spline(path: list):
+        import numpy as np
+        import matplotlib.pyplot as plt
+        from scipy.interpolate import UnivariateSpline
+
+        x = [point[0] for point in path]
+        y = [point[1] for point in path]
+        # rng = np.random.default_rng()
+        # x = np.linspace(-3, 3, 50)
+        # y = np.exp(-x**2) + 0.1 * rng.standard_normal(50)
+        from scipy.interpolate import splprep, splev
+        tck, _ = splprep([x, y], s=.1)
+        u = np.linspace(0,1,num=50)
+        new_points = splev(u, tck)
+        print(new_points)
+        return np.asarray(new_points).transpose()
+        
+
 
     def get_final_traj(self, final_node: Point2d, goal: Point2d):
         # Working backwards, at each point, the preceding node should be the adjacent node with the lowest ID.
