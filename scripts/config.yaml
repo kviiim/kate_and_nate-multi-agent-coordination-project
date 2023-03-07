@@ -1,11 +1,12 @@
 # settings
-use_hardware:   False
+use_hardware:   True
 time_delta:     0.25
 
 #                 Agent ID, Init position, Take-off height
-agent_init:     [['CF7', [-0.6, 0.9, 0.0], 0.4],
-                 ['CF8', [-0.6, 0.3, 0.0], 0.4],
-                 ['CF9', [-0.6, -0.3, 0.0], 0.4]]
+agent_init:     [
+                #  ['CF7', [-0.6, 0.9, 0.0], 0.4],
+                #  ['CF8', [-0.6, 0.3, 0.0], 0.4],
+                 ['CF4', [0.0, 0.0, 0.0], 1.0]]
 
 
 agent_colors:   ['DarkBlue', 'DarkSlateGrey', 'MediumPurple']

@@ -181,13 +181,28 @@ def run():
         else:
             self.velocity_setpoint_sim(V)
 
+    def kate_and_nates_agent_nav(agent: Quadrotor):
+        """
+        set commander velocity in global frame
+        """
+        V = VelCommand()
 
+        current_pos = agent.get_pos() 
+        next_pos = agent._setpoints[agent._setpoints_index]
+
+        V.vx = (next_pos[0] - current_pos.x)/agent._time_delta
+        V.vy = (next_pos[1] - current_pos.y)/agent._time_delta
+        V.vz = (next_pos[2] - current_pos.z)/agent._time_delta
+        V.v_psi = 0.0
+
+        agent._setpoints_index += 1
+        agent.velocity_setpoint_hw_global(V)
     # #########################################################################################################
     #### STEP 5: Run the Main control loop
     # #########################################################################################################
 
     time_lapse = 0
-    flight_duration = 5
+    flight_duration = .6
 
 
     for agent in agent_list.values():
@@ -200,7 +215,7 @@ def run():
 
         for agent in agent_list.values():
 
-            agent.control_method = agent_nav(agent)
+            agent.control_method = kate_and_nates_agent_nav(agent)
             
             # print out current position of each agent
             x, y, z = agent.get_pos().x, agent.get_pos().y, agent.get_pos().z

@@ -160,7 +160,7 @@ class Quadrotor():
         """
         Using commander, send velocities in global frame.
         """
-        self.scf.commander.send_velocity_world_setpoint(vel_cmd.vx,
+        self.scf.cf.commander.send_velocity_world_setpoint(vel_cmd.vx,
                                     vel_cmd.vy,
                                     vel_cmd.vz,
                                     vel_cmd.v_psi)
