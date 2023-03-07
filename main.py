@@ -189,6 +189,7 @@ def run():
 
         current_pos = agent.get_pos() 
         next_pos = agent._setpoints[agent._setpoints_index]
+        print(next_pos)
 
         V.vx = (next_pos[0] - current_pos.x)/agent._time_delta
         V.vy = (next_pos[1] - current_pos.y)/agent._time_delta
@@ -196,7 +197,8 @@ def run():
         V.v_psi = 0.0
 
         agent._setpoints_index += 1
-        agent.velocity_setpoint_hw_global(V)
+        # agent.velocity_setpoint_hw_global(V)
+        agent.velocity_setpoint_hw_commander(V,next_pos[2])
     # #########################################################################################################
     #### STEP 5: Run the Main control loop
     # #########################################################################################################

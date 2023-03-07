@@ -156,6 +156,13 @@ class Quadrotor():
         # store updates
         self.update_state_trace()
 
+    def velocity_setpoint_hw_commander(self, vel_cmd, z_value):
+        self.scf.cf.commander.send_hover_setpoint(vel_cmd.vx,
+                                    vel_cmd.vy,
+                                    vel_cmd.v_psi,
+                                    z_value)
+        self.update_state_trace()
+
     def velocity_setpoint_hw_global(self, vel_cmd):
         """
         Using commander, send velocities in global frame.
