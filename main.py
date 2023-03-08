@@ -6,6 +6,7 @@ import plotly.graph_objects as go
 import yaml
 import time
 
+import rrt
 
 
 def run():
@@ -110,7 +111,9 @@ def run():
     # instantiate ground control system object
     gcs = GroundControlSystem(agent_list=agent_list, 
                             task_list=task_list,
-                            env=env)
+                            env=env)#,
+                            #pick_locations = pick_locations,
+                            #drop_locations=drop_locations)
 
     # creates a directed graph based on the agents and task list
     gcs.set_task_graph(draw=True) # toggle draw True or False
@@ -185,8 +188,11 @@ def run():
         """
         set commander velocity in global frame
         """
-        V = VelCommand()
+        if agent._setpoints_index == len(agent._setpoints) + 1:
+            return
 
+        V = VelCommand()
+        
         current_pos = agent.get_pos() 
         next_pos = agent._setpoints[agent._setpoints_index]
         print(next_pos)
@@ -197,6 +203,12 @@ def run():
         V.v_psi = 0.0
         
         agent._setpoints_index += 1
+        if agent._setpoints_index == len(agent._setpoints):
+            agent.land()
+            agent._setpoints_index += 1
+            return
+        
+
         # agent.velocity_setpoint_hw_global(V)
         agent.velocity_setpoint_hw_commander(V,next_pos[2])
     # #########################################################################################################

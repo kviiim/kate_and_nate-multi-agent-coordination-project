@@ -2,7 +2,8 @@ import sys
 sys.path.insert(0, './scripts')
 from utils import Position, dist
 import networkx as nx
-
+import rrt
+from occupany_grid import Point2d
 
 class GroundControlSystem():
     def __init__(self, agent_list=None, task_list=None, env=None):
@@ -12,6 +13,7 @@ class GroundControlSystem():
         self._task_assignment = None
         self._agent_paths = dict()
         self._env = env
+        self._rrt = rrt.CrazyflieRRT
 
     # getters and setters -------------------------------------------------
 
@@ -206,10 +208,26 @@ class GroundControlSystem():
 
     def generate_agent_paths(self):
         """generate path/trajectory for each agent based on assignment"""
-        
+        # write to quadcopter - path_list = [to_path1, path1, connector_path, path2]
         # your code here...
-
+        for agent, tasks in self._task_assignment.items():
+            agent_paths = []
+            for task_idx,task in enumerate(tasks):
+                current_pick = Point2d((task.pick_loc.x, task.pick_lock.y))
+                current_drop = Point2d((task.drop_loc.x, task.drop_lock.y))
+                if task_idx == 0:
+                    start = Point2d((agent._state.pos_x, agent._state.pos_y))
+                    path = self._rrt.generate(start, current_pick)
+                    agent_paths.append(path)
+                else:
+                    last_drop = Point2d((tasks[task_idx-1].drop_loc.x, tasks[task_idx-1].drop_loc.y))
+                    path = self._rrt.generate(last_drop, current_pick)
+                    agent_paths.append(path)
+                path = self._rrt.generate(current_pick, current_drop)
+            agent._path_list = agent_paths
         self._agent_paths = None
+
+        
             
 
     def smoothen_paths(self):

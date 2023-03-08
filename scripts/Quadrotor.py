@@ -41,6 +41,7 @@ class Quadrotor():
         # task and trajectory
         self._task = None
         self._trajectory = None
+        self._path_list = None
 
 
         # set up system
