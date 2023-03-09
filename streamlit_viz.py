@@ -69,7 +69,7 @@ if __name__ == "__main__":
     if generated_path == []:
         st.write("Path not yet generated")
     else:
-        relaxed = rrt.relax_path(generated_path)
+        relaxed = rrt.relax_path(generated_path, step_size)
         spline_traj = CrazyflieRRT.fit_spline(relaxed)
         print(spline_traj)
         viz.plot_trajectory(

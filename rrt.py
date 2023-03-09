@@ -95,10 +95,33 @@ class CrazyflieRRT:
         else:
             return []
 
-    def relax_path(self, path: list[Point2d]):
+    @staticmethod
+    def interpolate_path(path: list[Point2d], des_dist = 10) -> list[Point2d]:
+        new_path = []
+        for seg in range(len(path)-1):
+            p1 = np.asarray((path[seg][0], path[seg][1]) )
+            p2 = np.asarray((path[seg+1][0], path[seg+1][1]))
+            print(f"p1: {p1}, p2: {p2}")
+            total_distance = np.linalg.norm(p2-p1)
+            # if total_distance <= des_dist:
+            #     return [p1, p2]
+            num_pts = int(total_distance/des_dist)
+            new_pts = np.linspace(p1, p2, num_pts, endpoint=True)
+            print(f"dnew_pts{new_pts}")
+            new_path.extend(new_pts)
+        print(new_path)
+        point_path = [Point2d(p[0], p[1]) for p in new_path]
+        print(f"Point path{point_path}")
+        res = []
+        [res.append(x) for x in point_path if x not in res]
+        print(res)
+        return res
+    
+    def relax_path(self, path: list[Point2d], step_size: int) -> list[Point2d]:
+        min_path_len = 3
         new_path = []
         curr_forward_idx = 0
-        last_node_idx = len(path) - 1
+        last_node_idx = len(path) - 1 #- min_path_len
         while curr_forward_idx <= last_node_idx:
             new_path.append(path[curr_forward_idx])
             curr_backward_idx = last_node_idx
@@ -116,7 +139,12 @@ class CrazyflieRRT:
                 curr_forward_idx = curr_backward_idx
             else:
                 curr_forward_idx += 1
-        return new_path
+        
+        # Add last min_path len points
+        # for i in range(min_path_len):
+        #     new_path.append(path[(-1-i)])
+        print(f" Realxed: {new_path}")
+        return self.interpolate_path(new_path, step_size)
     
     @staticmethod
     def fit_spline(path: list):
@@ -130,10 +158,9 @@ class CrazyflieRRT:
         # x = np.linspace(-3, 3, 50)
         # y = np.exp(-x**2) + 0.1 * rng.standard_normal(50)
         from scipy.interpolate import splprep, splev
-        tck, _ = splprep([x, y], s=.1)
+        tck, _ = splprep([x, y])
         u = np.linspace(0,1,num=50)
         new_points = splev(u, tck)
-        print(new_points)
         return np.asarray(new_points).transpose()
         
 
