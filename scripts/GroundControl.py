@@ -14,9 +14,9 @@ class GroundControlSystem():
         self._task_assignment = None
         self._agent_paths = dict()
         self._env = env
-        viz = build_robosys_world()
-        viz.add_omap_to_fig()
-        self._rrt = rrt.CrazyflieRRT(viz.omap, step_size=8, goal_bias=0.25)
+        self.viz = build_robosys_world()
+        self.viz.add_omap_to_fig()
+        self._rrt = rrt.CrazyflieRRT(self.viz.omap, step_size=8, goal_bias=0.25)
 
     # getters and setters -------------------------------------------------
 
@@ -216,22 +216,37 @@ class GroundControlSystem():
         for agent, tasks in self._task_assignment.items():
             agent_paths = []
             for task_idx,task in enumerate(tasks):
-                current_pick = Point2d((task.pick_loc.x, task.pick_lock.y))
-                current_drop = Point2d((task.drop_loc.x, task.drop_lock.y))
+                current_pick = Point2d(task.pick_loc.x*100, task.pick_loc.y*100)
+                current_drop = Point2d(task.drop_loc.x*100, task.drop_loc.y*100)
                 if task_idx == 0:
-                    start = Point2d((agent._state.pos_x, agent._state.pos_y))
+                    start = Point2d(agent._state.x_pos*100, agent._state.y_pos*100)
                     path = self._rrt.rrt_wrapper(start, current_pick)
-                    agent_paths.append(path)
+                    path_in_m = [Point2d(p.x/100, p.y/100) for p in path]
+                    agent_paths.append(path_in_m)
                 else:
-                    last_drop = Point2d((tasks[task_idx-1].drop_loc.x, tasks[task_idx-1].drop_loc.y))
+                    last_drop = Point2d(tasks[task_idx-1].drop_loc.x * 100, tasks[task_idx-1].drop_loc.y * 100)
                     path = self._rrt.rrt_wrapper(last_drop, current_pick)
-                    agent_paths.append(path)
-                path = self._rrt.generate(current_pick, current_drop)
+                    path_in_m = [Point2d(p.x/100, p.y/100) for p in path]
+                    agent_paths.append(path_in_m)
+                path = self._rrt.rrt_wrapper(current_pick, current_drop)
+                path_in_m = [Point2d(p.x/100, p.y/100) for p in path]
+                agent_paths.append(path_in_m)
             agent._path_list = agent_paths
         self._agent_paths = None
 
-        
-            
+        for node in rrt.tree.nodes:
+            self.viz.add_point(
+                Point2d(*node),
+                marker=dict(size=2, symbol="circle", color="black", opacity=0.15),
+            )  # , name=rrt.tree.nodes[node]["id"])
+        for edge in rrt.tree.edges:
+            self.viz.plot_trajectory(
+                edge,
+                marker=dict(size=2, symbol="circle", color="black", opacity=0.2),
+                line=dict(color="black", width=1),
+                text=[],
+            )
+        self.viz.show_figure()
 
     def smoothen_paths(self):
         """applies a b-spline to the waypoints to obtain a continous path

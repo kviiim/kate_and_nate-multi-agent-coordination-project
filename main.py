@@ -140,14 +140,14 @@ def run():
     # #########################################################################################################
 
 
-    fig1 = go.Figure()
-    fig2 = go.Figure()
+    # fig1 = go.Figure()
+    # fig2 = go.Figure()
 
-    sim = Simulation(env=env, fig1=fig1, fig2=fig2)
+    # sim = Simulation(env=env, fig1=fig1, fig2=fig2)
 
-    sim.add_agents(agent_list)
-    sim.set_task_list(task_list)
-    sim.init_plot()
+    # sim.add_agents(agent_list)
+    # sim.set_task_list(task_list)
+    # sim.init_plot()
 
 
     # ---------------------------------------------------------------------------------------------------------
