@@ -70,15 +70,13 @@ if __name__ == "__main__":
         st.write("Path not yet generated")
     else:
         relaxed = rrt.relax_path(generated_path, step_size)
-        spline_traj = CrazyflieRRT.fit_spline(relaxed)
-        print(spline_traj)
-        viz.plot_trajectory(
-            spline_traj,
-            marker=dict(size=10, symbol="circle", color="red", opacity=0.4),
-            line=dict(color="red", width=4),
-            text=[],
-            name="Splined trajectory",
-        )
+        # viz.plot_trajectory(
+        #     relaxed,
+        #     marker=dict(size=10, symbol="circle", color="red", opacity=0.4),
+        #     line=dict(color="red", width=4),
+        #     text=[],
+        #     name="Splined trajectory",
+        # )
         with open(f'path_x_{start_posn.x}_y_{start_posn.y}_y_to_x_{goal_posn.x}_y_{goal_posn.y}.pkl', 'wb') as file:
             pickle.dump(relaxed, file)
 

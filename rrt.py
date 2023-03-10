@@ -79,6 +79,7 @@ class CrazyflieRRT:
                 bounding_box=self.bbox,
             )
             if not clear:
+                new_node = closest_node
                 continue
 
             # 5. Add the node to the tree.
@@ -121,7 +122,7 @@ class CrazyflieRRT:
         min_path_len = 3
         new_path = []
         curr_forward_idx = 0
-        last_node_idx = len(path) - 1 #- min_path_len
+        last_node_idx = len(path) - 1
         while curr_forward_idx <= last_node_idx:
             new_path.append(path[curr_forward_idx])
             curr_backward_idx = last_node_idx
@@ -139,12 +140,9 @@ class CrazyflieRRT:
                 curr_forward_idx = curr_backward_idx
             else:
                 curr_forward_idx += 1
-        
-        # Add last min_path len points
-        # for i in range(min_path_len):
-        #     new_path.append(path[(-1-i)])
+
         print(f" Realxed: {new_path}")
-        return self.interpolate_path(new_path, step_size)
+        return self.fit_spline(self.interpolate_path(new_path, step_size))
     
     @staticmethod
     def fit_spline(path: list):
@@ -154,9 +152,6 @@ class CrazyflieRRT:
 
         x = [point[0] for point in path]
         y = [point[1] for point in path]
-        # rng = np.random.default_rng()
-        # x = np.linspace(-3, 3, 50)
-        # y = np.exp(-x**2) + 0.1 * rng.standard_normal(50)
         from scipy.interpolate import splprep, splev
         tck, _ = splprep([x, y])
         u = np.linspace(0,1,num=50)
