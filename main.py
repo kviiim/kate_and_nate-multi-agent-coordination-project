@@ -233,22 +233,22 @@ def run():
 
     time.sleep(3)
 
-    # while True:
-    while time_lapse < flight_duration: #secs
+    # # while True:
+    # while time_lapse < flight_duration: #secs
 
-        for agent in agent_list.values():
+    #     for agent in agent_list.values():
 
-            agent.control_method = kate_and_nates_agent_nav(agent, time_lapse)
+    #         agent.control_method = kate_and_nates_agent_nav(agent, time_lapse)
             
-            # print out current position of each agent
-            x, y, z = agent.get_pos().x, agent.get_pos().y, agent.get_pos().z
-            print(f'Agent [{agent._id}]: t = {time_lapse} -> [x, y, z] = [{x:0.3f}, {y:0.3f}, {z:0.3f}]')
+    #         # print out current position of each agent
+    #         x, y, z = agent.get_pos().x, agent.get_pos().y, agent.get_pos().z
+    #         print(f'Agent [{agent._id}]: t = {time_lapse} -> [x, y, z] = [{x:0.3f}, {y:0.3f}, {z:0.3f}]')
                 
 
-        # keep track of time lapsed
-        time_lapse += time_delta
+    #     # keep track of time lapsed
+    #     time_lapse += time_delta
 
-        time.sleep(time_delta) #TODO: Find what the max delay we can have to good performance with position or velocity command
+    #     time.sleep(time_delta) #TODO: Find what the max delay we can have to good performance with position or velocity command
 
 
     for agent in agent_list.values():
