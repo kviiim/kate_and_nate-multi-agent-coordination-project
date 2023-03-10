@@ -130,7 +130,6 @@ def build_robosys_world():
 
     robosys_grid.set_rectangles(Point2d(0, 30), Point2d(122, 60.5))
     robosys_grid.set_rectangles(Point2d(0, -60.5), Point2d(122, -30))
-    # robosys_grid.set_rectangles(Point3d(0, -60.5, 62.3), Point3d(35, -35, 90))
 
     world = viz_world(robosys_grid)
     world.add_omap_to_fig()

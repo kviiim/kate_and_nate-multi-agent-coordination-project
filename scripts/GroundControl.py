@@ -221,31 +221,32 @@ class GroundControlSystem():
                 if task_idx == 0:
                     start = Point2d(agent._state.x_pos*100, agent._state.y_pos*100)
                     path = self._rrt.rrt_wrapper(start, current_pick)
-                    path_in_m = [Point2d(p.x/100, p.y/100) for p in path]
+                    path_in_m = path/100.
                     agent_paths.append(path_in_m)
                 else:
                     last_drop = Point2d(tasks[task_idx-1].drop_loc.x * 100, tasks[task_idx-1].drop_loc.y * 100)
                     path = self._rrt.rrt_wrapper(last_drop, current_pick)
-                    path_in_m = [Point2d(p.x/100, p.y/100) for p in path]
+                    path_in_m = path/100.
                     agent_paths.append(path_in_m)
                 path = self._rrt.rrt_wrapper(current_pick, current_drop)
-                path_in_m = [Point2d(p.x/100, p.y/100) for p in path]
+                path_in_m = path/100.
                 agent_paths.append(path_in_m)
+                self.viz.plot_trajectory(
+                    path,
+                    marker=dict(
+                        size=4,
+                        symbol="circle",
+                        color="blue",
+                        opacity=0.7,
+                    ),
+                    line=dict(color="blue", width=7),
+                    name="Relaxed Trajectory",
+                )
+
             agent._path_list = agent_paths
         self._agent_paths = None
 
-        for node in rrt.tree.nodes:
-            self.viz.add_point(
-                Point2d(*node),
-                marker=dict(size=2, symbol="circle", color="black", opacity=0.15),
-            )  # , name=rrt.tree.nodes[node]["id"])
-        for edge in rrt.tree.edges:
-            self.viz.plot_trajectory(
-                edge,
-                marker=dict(size=2, symbol="circle", color="black", opacity=0.2),
-                line=dict(color="black", width=1),
-                text=[],
-            )
+        
         self.viz.show_figure()
 
     def smoothen_paths(self):

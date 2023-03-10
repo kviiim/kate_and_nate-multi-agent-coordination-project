@@ -164,14 +164,18 @@ class CrazyflieRRT:
         # Working backwards, at each point, the preceding node should be the adjacent node with the lowest ID.
         node = final_node
         node_list = [goal, final_node]
+        print(f"Final trajj calc {node_list}, initial_node {self.initial_node}")
         while node != self.initial_node:
+            print(node)
             prev_node = list(self.tree.predecessors(node))[0]
             node_list.append(prev_node)
             node = prev_node
         node_list.reverse()
+        self.tree = nx.DiGraph()
         return node_list
 
-    def rrt_wrapper(self, start: Point2d, goal: Point2d, max_iter: int = 800, goal_diameter=5, num_spline_pts=20):
+    def rrt_wrapper(self, start: Point2d, goal: Point2d, max_iter: int = 800, goal_diameter=10, num_spline_pts=20):
+        print(f"Start RRT {start} {goal}")
         final_path = self.generate(start, goal, max_iter, goal_diameter)
         splined_relaxed_path = self.relax_path(final_path, self.step_size)
         return splined_relaxed_path
