@@ -4,6 +4,7 @@ from utils import Position, dist
 import networkx as nx
 import rrt
 from occupany_grid import Point2d
+from viz import build_robosys_world
 
 class GroundControlSystem():
     def __init__(self, agent_list=None, task_list=None, env=None):
@@ -13,7 +14,9 @@ class GroundControlSystem():
         self._task_assignment = None
         self._agent_paths = dict()
         self._env = env
-        self._rrt = rrt.CrazyflieRRT
+        viz = build_robosys_world()
+        viz.add_omap_to_fig()
+        self._rrt = rrt.CrazyflieRRT(viz.omap, step_size=8, goal_bias=0.25)
 
     # getters and setters -------------------------------------------------
 
@@ -217,11 +220,11 @@ class GroundControlSystem():
                 current_drop = Point2d((task.drop_loc.x, task.drop_lock.y))
                 if task_idx == 0:
                     start = Point2d((agent._state.pos_x, agent._state.pos_y))
-                    path = self._rrt.generate(start, current_pick)
+                    path = self._rrt.rrt_wrapper(start, current_pick)
                     agent_paths.append(path)
                 else:
                     last_drop = Point2d((tasks[task_idx-1].drop_loc.x, tasks[task_idx-1].drop_loc.y))
-                    path = self._rrt.generate(last_drop, current_pick)
+                    path = self._rrt.rrt_wrapper(last_drop, current_pick)
                     agent_paths.append(path)
                 path = self._rrt.generate(current_pick, current_drop)
             agent._path_list = agent_paths
