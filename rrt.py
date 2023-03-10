@@ -94,7 +94,7 @@ class CrazyflieRRT:
 
         # Goal not found, Max iters reached
         else:
-            return []
+            raise ValueError("No path Found")
 
     @staticmethod
     def interpolate_path(path: list[Point2d], des_dist = 10) -> list[Point2d]:
@@ -170,3 +170,8 @@ class CrazyflieRRT:
             node = prev_node
         node_list.reverse()
         return node_list
+
+    def rrt_wrapper(self, start: Point2d, goal: Point2d, max_iter: int = 10, goal_diameter=5, num_spline_pts=20):
+        final_path = self.generate(start, goal, max_iter, goal_diameter)
+        splined_relaxed_path = self.relax_path(final_path, self.step_size)
+        return splined_relaxed_path
