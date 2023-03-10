@@ -140,14 +140,14 @@ def run():
     # #########################################################################################################
 
 
-    # fig1 = go.Figure()
-    # fig2 = go.Figure()
+    fig1 = go.Figure()
+    fig2 = go.Figure()
 
-    # sim = Simulation(env=env, fig1=fig1, fig2=fig2)
+    sim = Simulation(env=env, fig1=fig1, fig2=fig2)
 
-    # sim.add_agents(agent_list)
-    # sim.set_task_list(task_list)
-    # sim.init_plot()
+    sim.add_agents(agent_list)
+    sim.set_task_list(task_list)
+    sim.init_plot()
 
 
     # ---------------------------------------------------------------------------------------------------------
@@ -193,8 +193,8 @@ def run():
             agent._hover_time -= time_delta
             return
 
-        if agent._setpoints_index == len(agent._setpoints) + 1:
-            agent._hover_time = 3
+        if agent._setpoints_index >= len(agent._setpoints):
+            agent._hover_time = 1
             agent._setpoints = agent._path_list[agent._paths_index]
             agent._setpoints_index = 0
             agent._paths_index += 1
@@ -208,47 +208,46 @@ def run():
 
         V.vx = (next_pos[0] - current_pos.x)/agent._time_delta
         V.vy = (next_pos[1] - current_pos.y)/agent._time_delta
-        V.vz = (next_pos[2] - current_pos.z)/agent._time_delta
         V.v_psi = 0.0
         
         agent._setpoints_index += 1
-        if agent._setpoints_index == len(agent._setpoints):
-            agent.land()
-            agent._setpoints_index += 1
-            return
+        # if agent._setpoints_index == len(agent._setpoints):
+        #     # agent.land()
+        #     agent._setpoints_index += 1
+        #     return
         
 
         # agent.velocity_setpoint_hw_global(V)
-        agent.velocity_setpoint_hw_commander(V,next_pos[2])
+        agent.velocity_setpoint_hw_commander(V,agent._take_off_height)
     # #########################################################################################################
     #### STEP 5: Run the Main control loop
     # #########################################################################################################
 
     time_lapse = 0
-    flight_duration = 4
+    flight_duration = 25
 
 
     for agent in agent_list.values():
         agent.initialize_agent()
 
-    time.sleep(3)
+    time.sleep(1)
 
-    # # while True:
-    # while time_lapse < flight_duration: #secs
+    # while True:
+    while time_lapse < flight_duration: #secs
 
-    #     for agent in agent_list.values():
+        for agent in agent_list.values():
 
-    #         agent.control_method = kate_and_nates_agent_nav(agent, time_lapse)
+            agent.control_method = kate_and_nates_agent_nav(agent)
             
-    #         # print out current position of each agent
-    #         x, y, z = agent.get_pos().x, agent.get_pos().y, agent.get_pos().z
-    #         print(f'Agent [{agent._id}]: t = {time_lapse} -> [x, y, z] = [{x:0.3f}, {y:0.3f}, {z:0.3f}]')
+            # print out current position of each agent
+            x, y, z = agent.get_pos().x, agent.get_pos().y, agent.get_pos().z
+            print(f'Agent [{agent._id}]: t = {time_lapse} -> [x, y, z] = [{x:0.3f}, {y:0.3f}, {z:0.3f}]')
                 
 
-    #     # keep track of time lapsed
-    #     time_lapse += time_delta
+        # keep track of time lapsed
+        time_lapse += time_delta
 
-    #     time.sleep(time_delta) #TODO: Find what the max delay we can have to good performance with position or velocity command
+        time.sleep(time_delta) #TODO: Find what the max delay we can have to good performance with position or velocity command
 
 
     for agent in agent_list.values():

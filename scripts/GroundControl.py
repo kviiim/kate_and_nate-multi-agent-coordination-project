@@ -221,11 +221,33 @@ class GroundControlSystem():
                 if task_idx == 0:
                     start = Point2d(agent._state.x_pos*100, agent._state.y_pos*100)
                     path = self._rrt.rrt_wrapper(start, current_pick)
+                    self.viz.plot_trajectory(
+                        path,
+                        marker=dict(
+                            size=4,
+                            symbol="circle",
+                            color="blue",
+                            opacity=0.7,
+                        ),
+                        line=dict(color="blue", width=7),
+                        name="Relaxed Trajectory",
+                    )
                     path_in_m = path/100.
                     agent_paths.append(path_in_m)
                 else:
                     last_drop = Point2d(tasks[task_idx-1].drop_loc.x * 100, tasks[task_idx-1].drop_loc.y * 100)
                     path = self._rrt.rrt_wrapper(last_drop, current_pick)
+                    self.viz.plot_trajectory(
+                        path,
+                        marker=dict(
+                            size=4,
+                            symbol="circle",
+                            color="blue",
+                            opacity=0.7,
+                        ),
+                        line=dict(color="blue", width=7),
+                        name="Relaxed Trajectory",
+                    )
                     path_in_m = path/100.
                     agent_paths.append(path_in_m)
                 path = self._rrt.rrt_wrapper(current_pick, current_drop)

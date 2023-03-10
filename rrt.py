@@ -22,7 +22,7 @@ class CrazyflieRRT:
         self.grid = grid
         self.step_size = step_size
         self.goal_bias = goal_bias
-        self.bbox = [(0, 0), (12, 12), (-12, 12), (-12, -12), (-12, -12)]
+        self.bbox = [(0, 0), (5, 5), (-5, 5), (-5, -5), (-5, -5)]
 
         self.rng = np.random.default_rng(10)
 
@@ -154,7 +154,7 @@ class CrazyflieRRT:
         y = [point[1] for point in path]
         from scipy.interpolate import splprep, splev
         tck, _ = splprep([x, y])
-        u = np.linspace(0,1,num=50)
+        u = np.linspace(0,1,num=20)
         new_points = splev(u, tck)
         return np.asarray(new_points).transpose()
         
