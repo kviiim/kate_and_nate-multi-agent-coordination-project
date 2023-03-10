@@ -27,6 +27,7 @@ def run():
     num_agents = len(agent_init)
 
 
+
     print('Starting up the notebook for the Multi-Agent Coordination module... \n')
     print(f'Number of Agents: [{num_agents}] -> {[agent_init[i][0] for i in range(len(agent_init))]}')
     print(f'Use Hardware: [{use_hardware}]')
@@ -188,7 +189,15 @@ def run():
         """
         set commander velocity in global frame
         """
+        if agent._hover_time > 0:
+            agent._hover_time -= time_delta
+            return
+
         if agent._setpoints_index == len(agent._setpoints) + 1:
+            agent._hover_time = 3
+            agent._setpoints = agent._path_list[agent._paths_index]
+            agent._setpoints_index = 0
+            agent._paths_index += 1
             return
 
         V = VelCommand()
@@ -229,7 +238,7 @@ def run():
 
         for agent in agent_list.values():
 
-            agent.control_method = kate_and_nates_agent_nav(agent)
+            agent.control_method = kate_and_nates_agent_nav(agent, time_lapse)
             
             # print out current position of each agent
             x, y, z = agent.get_pos().x, agent.get_pos().y, agent.get_pos().z

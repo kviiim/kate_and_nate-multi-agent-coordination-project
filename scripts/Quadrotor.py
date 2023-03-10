@@ -43,6 +43,8 @@ class Quadrotor():
         self._trajectory = None
         self._path_list = None
 
+        self._hover_time = 0
+
 
         # set up system
         # get/set simulation parameters
@@ -58,8 +60,9 @@ class Quadrotor():
 
         print()
 
-        self._setpoints = list(np.linspace(start, end, num=num ,endpoint= True))
-        self._setpoints_index = 0
+        self._setpoints = []
+        self._setpoints_index = 1
+        self._paths_index = 0
 
 
         # parameters for simulated take-off and landing velocity control
